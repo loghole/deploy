@@ -1,0 +1,36 @@
+{
+  "logger": {
+    "level": "info",
+    "collector.url": "http://secret_token_1@collector:8080",
+    "namespace": "local"
+  },
+  "jaeger": {
+    "uri": "jaeger:6831"
+  },
+  "clickhouse": {
+    "uri": "clickhouse-db:9000",
+    "user": "",
+    "password": "",
+    "database": "logs",
+    "read.timeout": 10,
+    "write.timeout": 20
+  },
+  "server": {
+    "http.port": 8080,
+    "read.timeout": "1m",
+    "write.timeout": "1m",
+    "idle.timeout": "10m"
+  },
+  "service": {
+    "name": "collector",
+    "ip.header": "X-Real-IP",
+    "writer": {
+      "capacity": 1000,
+      "period": "1s"
+    },
+    "auth": {
+      "enable": true,
+      "tokens": ["secret_token_1", "secret_token_2"]
+    }
+  }
+}

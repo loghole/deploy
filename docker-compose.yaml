@@ -1,0 +1,33 @@
+version: '3'
+services:
+  clickhouse-db:
+    image: loghole/clickhouse-db:latest
+    volumes:
+      - './data/clickhouse:/var/lib/clickhouse'
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+
+  collector:
+    image: loghole/collector:latest
+    volumes:
+      - './configs:/configs'
+#      - './data/certs:/certs'
+    ports:
+      - 50000:8080
+    depends_on:
+      - clickhouse-db
+      - jaeger
+
+  dashboard:
+    image: loghole/dashboard:latest
+    volumes:
+      - './configs:/configs'
+#      - './data/certs:/certs'
+    ports:
+      - 8080:8080
+    depends_on:
+      - clickhouse-db
+      - jaeger
