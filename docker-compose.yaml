@@ -1,7 +1,7 @@
 version: '3'
 services:
   clickhouse-db:
-    image: loghole/clickhouse-db:latest
+    image: loghole/clickhouse-db:0.5.1
     volumes:
       - './data/clickhouse:/var/lib/clickhouse'
 
@@ -11,7 +11,7 @@ services:
       - "16686:16686"
 
   collector:
-    image: loghole/collector:latest
+    image: loghole/collector:0.6.0
     volumes:
       - './configs:/configs'
 #      - './data/certs:/certs'
@@ -22,7 +22,7 @@ services:
       - jaeger
 
   dashboard:
-    image: loghole/dashboard:latest
+    image: loghole/dashboard:0.6.0
     volumes:
       - './configs:/configs'
 #      - './data/certs:/certs'
