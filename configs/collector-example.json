@@ -19,11 +19,7 @@
     "http.port": 8080,
     "read.timeout": "1m",
     "write.timeout": "1m",
-    "idle.timeout": "10m",
-    "tls": {
-      "cert": "/certs/cert.crt",
-      "key": "/certs/key.key"
-    }
+    "idle.timeout": "10m"
   },
   "service": {
     "name": "collector",

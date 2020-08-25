@@ -13,8 +13,8 @@ services:
   collector:
     image: loghole/collector:0.6.0
     volumes:
-      - './configs:/configs'
-      - './certs:/certs'
+      - './configs/collector-example.json:/configs/collector.json'
+#      - './certs:/certs'
     ports:
       - 50000:8080
     depends_on:
@@ -24,8 +24,8 @@ services:
   dashboard:
     image: loghole/dashboard:0.6.0
     volumes:
-      - './configs:/configs'
-      - './certs:/certs'
+      - './configs/dashboard-example.json:/configs/dashboard.json'
+#      - './certs:/certs'
     ports:
       - 8080:8080
     depends_on:
