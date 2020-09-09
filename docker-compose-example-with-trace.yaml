@@ -1,0 +1,66 @@
+version: '3'
+services:
+  clickhouse-db:
+    image: loghole/clickhouse-db:0.5.1
+    volumes:
+      - './data/clickhouse:/var/lib/clickhouse'
+
+  collector:
+    image: loghole/collector:0.6.0
+    volumes:
+      - './configs/collector-example.json:/configs/collector.json'
+#      - './certs:/certs'
+    ports:
+      - 50000:8080
+    depends_on:
+      - clickhouse-db
+      - jaeger
+
+  dashboard:
+    image: loghole/dashboard:0.6.0
+    volumes:
+      - './configs/dashboard-example.json:/configs/dashboard.json'
+#      - './certs:/certs'
+    ports:
+      - 8080:8080
+    depends_on:
+      - clickhouse-db
+      - jaeger
+  
+  jaeger-collector:
+    image: jaegertracing/jaeger-collector
+    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
+    restart: on-failure
+    depends_on:
+      - cassandra-schema
+
+  jaeger-query:
+    image: jaegertracing/jaeger-query
+    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra"]
+    ports:
+      - "127.0.0.1:16686:16686"
+    restart: on-failure
+    depends_on:
+      - cassandra-schema
+
+  jaeger-agent:
+    image: jaegertracing/jaeger-agent
+    command: ["--reporter.grpc.host-port=jaeger-collector:14250"]
+    ports:
+      - "127.0.0.1:6831:6831/udp"
+    restart: on-failure
+    depends_on:
+      - jaeger-collector
+
+  cassandra:
+    image: cassandra:3.9
+    environment:
+      - HEAP_NEWSIZE=1M 
+      - MAX_HEAP_SIZE=2048M
+    volumes:
+      - './data/cassandra:/var/lib/cassandra'
+
+  cassandra-schema:
+    image: jaegertracing/jaeger-cassandra-schema
+    depends_on:
+      - cassandra
